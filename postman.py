@@ -1,6 +1,10 @@
 import requests
 import json
 import re
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 attachment_hash = ""
 xf_token = ""
@@ -30,9 +34,12 @@ def goto_kajgana():
 
 def login_to_kajgana():
     url = "https://forum.kajgana.com/login/login"
+    username = os.getenv('KAJGANA_USERNAME')
+    password = os.getenv('KAJGANA_PASSWORD')
+    print(username, password)
     payload={
-        'login': 'steffpotter@gmail.com',
-        'password': 'steff1q2w3e4r'
+        'login': username,
+        'password': password
         }
     response = session.request("POST", url, data=payload, allow_redirects=False)
 
@@ -57,6 +64,6 @@ def post_reply(number):
 # goto_kajgana()
 login_to_kajgana()
 goto_thread()
-post_reply(38179)
+# post_reply(38179)
 
 
