@@ -4,6 +4,7 @@ import re
 import os
 import sys
 import time
+import datetime
 from dotenv import load_dotenv
 from bs4 import BeautifulSoup
 
@@ -15,9 +16,9 @@ xf_token_pattern = r'<input type="hidden" name="_xfToken" value="([0-9]+,[a-f0-9
 attachment_hash_pattern = r'<input type="hidden" name="attachment_hash" value="([a-f0-9]+)" />'
 five_digit_number_pattern = r'(\d)\D*(\d)\D*(\d)\D*(\d)\D*(\d)'
 assert\
-    sys.argv.__len__ == 2 and\
-    int(sys.agrv[1]) > 0,\
-    "Usage: python main.py <last_number_posted_on_the_thread>"
+    len(sys.argv) == 2 and\
+    int(sys.argv[1]) > 0,\
+    "Usage: python bot.py <last_number_posted_on_the_thread>"
 current_number = int(sys.argv[1])
 seed_value = int(current_number/10000) * 10000 + int(current_number/1000)%10 * 1000
 number_to_post = 0
@@ -57,6 +58,9 @@ def login_to_kajgana():
     url = "https://forum.kajgana.com/login/login"
     username = os.getenv('KAJGANA_USERNAME')
     password = os.getenv('KAJGANA_PASSWORD')
+    assert username != None and password != None,\
+        "Missing username/password.\n\
+            Please follow the steps from the README file in order to fill username and password"
     payload={
         'login': username,
         'password': password
@@ -113,7 +117,7 @@ while True:
     should_post = check_if_should_post()
     if should_post:
         post_reply()
-        print(f"Just posted the number {last_number_posted_by_me}!")
+        print(f"{datetime.datetime.now()}: posted the number {last_number_posted_by_me}!")
     time.sleep(60)
 
 
